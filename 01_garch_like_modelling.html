@@ -240,7 +240,7 @@ window.Quarto = {
 <section id="data-loading-process" class="level2">
 <h2 class="anchored" data-anchor-id="data-loading-process">Data loading process</h2>
 <p>We start by loading the data, and examining the returns, log-return distribution, as well as variance plots.</p>
-<p>::: {#2886fe64 .cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ 6=‘i’ execution_count=1}</p>
+<p>::: {#2886fe64 .cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ 6=‘i’}</p>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datetime <span class="im">import</span> timedelta</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> product</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -257,10 +257,10 @@ window.Quarto = {
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpyro.infer <span class="im">import</span> MCMC, NUTS, Predictive</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> tqdm <span class="im">import</span> tqdm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>:::</p>
-<p>::: {#70843e6a .cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ execution_count=2}</p>
+<p>::: {#70843e6a .cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’}</p>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>az.style.use(<span class="st">"arviz-darkgrid"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>:::</p>
-<div id="960f032b" class="cell" data-execution_count="3">
+<div id="960f032b" class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> DataLoader:</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""A class for loading and processing time series data with adjustable parameters.</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -298,12 +298,12 @@ window.Quarto = {
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="36bf21ec" class="cell" data-exec="false" data-execution_count="4">
+<div id="36bf21ec" class="cell" data-exec="false">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a data loader with default parameters and load the data</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>data_loader <span class="op">=</span> DataLoader(max_records<span class="op">=</span><span class="dv">9000</span>, rolling_variance_window<span class="op">=</span><span class="dv">3</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>source_df <span class="op">=</span> data_loader.load_data(<span class="st">"./data/ng_daily.csv"</span>)</span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>source_df.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div class="cell-output cell-output-display">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -357,7 +357,7 @@ window.Quarto = {
 </div>
 </div>
 <p>The class below is implemented to ease off the data analysis and handling. It produces lagged features for returns and variances, as well as transforms the data so it is easier to feed into a model.</p>
-<p>::: {#2c1099e9 .cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ execution_count=5}</p>
+<p>::: {#2c1099e9 .cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’}</p>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> FeatureEngineer:</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""A class for creating lagged features from time series data.</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -470,11 +470,11 @@ window.Quarto = {
 <span id="cb5-110"><a href="#cb5-110" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_shift_pattern(<span class="va">self</span>, site: <span class="bu">str</span>, shift: <span class="bu">int</span>, prefix: <span class="bu">str</span> <span class="op">=</span> <span class="st">""</span>):</span>
 <span id="cb5-111"><a href="#cb5-111" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span>prefix<span class="sc">}</span><span class="ss">prev_</span><span class="sc">{</span>site<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>shift<span class="sc">}</span><span class="ss">"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>:::</p>
-<div id="a0b3d0c2" class="cell" data-exec="false" data-execution_count="6">
+<div id="a0b3d0c2" class="cell" data-exec="false">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>feature_engineer <span class="op">=</span> FeatureEngineer(columns<span class="op">=</span>[<span class="st">"log_ret"</span>, <span class="st">"var"</span>], n_shifts<span class="op">=</span><span class="dv">3</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_with_features <span class="op">=</span> feature_engineer.create_features(source_df)</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>df_with_features.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display">
 <div><style>
 .dataframe > thead > tr,
 .dataframe > tbody > tr {
@@ -587,7 +587,7 @@ window.Quarto = {
 <section id="exploratory-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="exploratory-data-analysis">Exploratory data analysis</h2>
 <p>Let’s look at various dynamics and distributions associated with this dataset. The first thing we notice is that neither return nor their log counterparts are distributed normally. Instead we see very narrow shapes with random variables that are sufficiently sub-gaussian. From my reading online it is quite normal for commodities, especially natural gas.</p>
-<div id="db78df25" class="cell" data-execution_count="7">
+<div id="db78df25" class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(df_with_features, x<span class="op">=</span><span class="st">"log_ret"</span>)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sns.histplot(df_with_features, x<span class="op">=</span><span class="st">"ret"</span>)</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>plt.xlim([<span class="op">-</span><span class="dv">1</span>, <span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -600,7 +600,7 @@ window.Quarto = {
 </div>
 </div>
 <p>The 3-day lag variance dynamics are plotted below. As we can see the variance has periods of massive volatility.</p>
-<div id="037eaf8f" class="cell" data-execution_count="8">
+<div id="037eaf8f" class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">6</span>))</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>sns.lineplot(df_with_features, x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"log_ret"</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">16</span>, <span class="dv">6</span>))</span>
@@ -633,7 +633,7 @@ window.Quarto = {
 \end{align*}
 \]</span></p>
 <p>While this model does not properly model the variance the way a ARCH/GARCH model would, I’m going to roll with it anyway for the sake of the learning exercise. It is also worth mentioning that there is a conceptual gap between me using the dataset variance for learning and later generating variance myself and essentially continuing in an autoregressive manner. While true, it’s practically a workable approach and used widely in other fields of ML, e.g.&nbsp;trajectory prediction with generative models. One of the next things I’m intending to do is to consider volatility to be latent variable and sample it myself, conditioning the site on observed volatility at the time. When it is not observed, it will just be sampled during the generative phase.</p>
-<div id="ba02a146" class="cell" data-execution_count="9">
+<div id="ba02a146" class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cut-off point</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="dv">300</span></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>present_value_train, present_value_test <span class="op">=</span> (</span>
@@ -645,7 +645,7 @@ window.Quarto = {
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    feature_engineer.to_numpy_dict(df_with_features[<span class="op">-</span>T:]),</span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>::: {#7f156640 .cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ execution_count=10}</p>
+<p>::: {#7f156640 .cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’}</p>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model(present_value: npt.NDArray, past_values: <span class="bu">dict</span>[<span class="bu">str</span>, npt.NDArray]) <span class="op">-&gt;</span> <span class="va">None</span>:</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    b <span class="op">=</span> numpyro.sample(<span class="st">"b"</span>, dist.Normal(<span class="dv">0</span>, <span class="fl">0.2</span>))</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    b_var <span class="op">=</span> numpyro.sample(<span class="st">"b_var"</span>, dist.Exponential(<span class="dv">10</span>))  <span class="co"># So it is positive</span></span>
@@ -678,7 +678,7 @@ window.Quarto = {
 <span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        numpyro.sample(<span class="st">"log_ret"</span>, dist.Normal(mu, jnp.sqrt(mu_var)), obs<span class="op">=</span>present_value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <p>:::</p>
 <p>Here’s a visualization of the model structure to clarify the dependencies.</p>
-<div id="28a5004a" class="cell" data-execution_count="11">
+<div id="28a5004a" class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>numpyro.render_model(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    model,</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    model_args<span class="op">=</span>(</span>
@@ -686,7 +686,7 @@ window.Quarto = {
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>        past_values_train,</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="11">
+<div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
 <p><img src="01_garch_like_modelling_files/figure-html/cell-12-output-1.svg" class="img-fluid figure-img"></p>
@@ -695,7 +695,7 @@ window.Quarto = {
 </div>
 </div>
 <p>The model if fitted using MCMC with the NUTS sampler.</p>
-<div id="de1d0cb3" class="cell" data-execution_count="12">
+<div id="de1d0cb3" class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rng_key <span class="op">=</span> random.PRNGKey(<span class="dv">0</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -732,9 +732,9 @@ Number of divergences: 0</code></pre>
 </div>
 </div>
 <p>The model seems to be converging well(notice the <span class="math inline">\(\hat{r}\)</span>), let us now explore basic diagnostics for the model. Starting with the forest plot of the posterior. I can immediately notice two interesting things: both biases for log return and variance are 0. Also, all variance terms except for the previous one are essentially 0 too, meaning that only the variance of the previous 3 days is important. We might very well have selected a bad time frame and we need to experiment with shorter/longer variance aggregation time frames. There is a need to study volatility clustering patterns somehow.</p>
-<div id="7fa9195c" class="cell" data-execution_count="13">
+<div id="7fa9195c" class="cell">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>az.plot_forest(posterior_samples)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="13">
+<div class="cell-output cell-output-display">
 <pre><code>array([&lt;Axes: title={'center': '94.0% HDI'}&gt;], dtype=object)</code></pre>
 </div>
 <div class="cell-output cell-output-display">
@@ -746,7 +746,7 @@ Number of divergences: 0</code></pre>
 </div>
 </div>
 <p>Let’s plot the HMC chains too, which all look adequate and as if sampling happens with high efficiency. The only odd chain is for the second lag of the variance, but that coefficient is estimated to be 0, which is consistent with higher order lags, so it seems like it can be safely ignored.</p>
-<div id="1b6eae6f" class="cell" data-execution_count="14">
+<div id="1b6eae6f" class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>az.plot_trace(idata)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -757,7 +757,7 @@ Number of divergences: 0</code></pre>
 </div>
 </div>
 <p>Let’s now implement the autoregressive part of the model. Starting from the last known price and update the model. All needed components, such as the predicted log returns that will be used as past values, as well as the variance that will be used autoregressively as well.</p>
-<div id="e8f42ffb" class="cell" data-execution_count="15">
+<div id="e8f42ffb" class="cell">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> append_from_log_ret(df: pl.DataFrame, new_log_ret: <span class="bu">float</span>) <span class="op">-&gt;</span> pl.DataFrame:</span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Adds a new record to the dataframe based on a log return value.</span></span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -792,7 +792,7 @@ Number of divergences: 0</code></pre>
 <span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pl.concat([df, new_row])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Finally ready to generate some paths for the natural gas prices. This is a simple autoregressive loop wherein the newly generated data is fed as input into the next step.</p>
-<div id="12cd2a4d" class="cell" data-execution_count="26">
+<div id="12cd2a4d" class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>num_sims <span class="op">=</span> <span class="dv">1000</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>all_trajectories <span class="op">=</span> []</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -842,7 +842,7 @@ Number of divergences: 0</code></pre>
 <pre><code>100%|██████████| 1000/1000 [00:48&lt;00:00, 20.62it/s]</code></pre>
 </div>
 </div>
-<div id="8940b619" class="cell" data-execution_count="27">
+<div id="8940b619" class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>sns.lineplot(all_runs, x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"price"</span>, hue<span class="op">=</span><span class="st">"run_id"</span>)</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">90</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
@@ -855,7 +855,7 @@ Number of divergences: 0</code></pre>
 </div>
 <p>As we can see on the charts below, the generated paths exhibit generally adequate behavior. Very few paths deviate and end up too high, and there is no degenerate behaviour with negative prices or prices near 0. While negative prices did happen in 2022 for oil, that is not typical and not something one could reasonably predict.</p>
 <p>I now turn my attention to looking at the distribution for the final prices among the generated paths. We can see a somewhat healthy asymmetric distribution with a few high price examples on the right hand side. We can clearly see that the paths generated show there is some reasonable expected price behavior.</p>
-<div id="0a83baec" class="cell" data-execution_count="28">
+<div id="0a83baec" class="cell">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>last_prices <span class="op">=</span> (</span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    all_runs.sort(<span class="st">"date"</span>)  <span class="co"># Ensure dates are in correct order</span></span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    .group_by(<span class="st">"run_id"</span>)</span>
@@ -872,7 +872,7 @@ Number of divergences: 0</code></pre>
 </div>
 </div>
 <p>Next, we calculate the call option payoff distributions, as well as model-implied option prices.</p>
-<div id="f43279a7" class="cell" data-execution_count="29">
+<div id="f43279a7" class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>strike_prices <span class="op">=</span> [<span class="fl">2.5</span>, <span class="fl">3.0</span>, <span class="fl">3.5</span>, <span class="fl">4.0</span>]</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a list of DataFrames, one per strike</span></span>
@@ -908,7 +908,7 @@ Number of divergences: 0</code></pre>
 </div>
 </div>
 </div>
-<div id="f71a19ec" class="cell" data-execution_count="30">
+<div id="f71a19ec" class="cell">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Group and average payoff per strike</span></span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>implied_prices <span class="op">=</span> payoff_df_all.group_by(<span class="st">"strike"</span>).agg(pl.col(<span class="st">"payoff_at_expiry"</span>).mean())</span>
 <span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>

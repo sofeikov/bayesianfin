@@ -36,7 +36,7 @@ Gas](https://www.cmegroup.com/markets/energy/natural-gas/natural-gas.html).
 We start by loading the data, and examining the returns, log-return
 distribution, as well as variance plots.
 
-::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ 6=‘i’ execution_count=1}
+::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ 6=‘i’}
 
 ``` python
 from datetime import timedelta
@@ -58,7 +58,7 @@ from tqdm import tqdm
 
 :::
 
-::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ execution_count=2}
+::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’}
 
 ``` python
 az.style.use("arviz-darkgrid")
@@ -169,7 +169,7 @@ The class below is implemented to ease off the data analysis and
 handling. It produces lagged features for returns and variances, as well
 as transforms the data so it is easier to feed into a model.
 
-::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ execution_count=5}
+::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’}
 
 ``` python
 class FeatureEngineer:
@@ -471,7 +471,7 @@ past_values_train, past_values_test = (
 )
 ```
 
-::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’ execution_count=10}
+::: {.cell 0=‘e’ 1=‘x’ 2=‘p’ 3=‘o’ 4=‘r’ 5=‘t’}
 
 ``` python
 def model(present_value: npt.NDArray, past_values: dict[str, npt.NDArray]) -> None:
