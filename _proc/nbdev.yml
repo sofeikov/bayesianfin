@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "bayesianfin"
+  site-url: "https://sofeikov.github.io/bayesianfin"
+  description: "Modelling finance from the ground-up"
+  repo-branch: main
+  repo-url: "https://github.com/sofeikov/bayesianfin"
