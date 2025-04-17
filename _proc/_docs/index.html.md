@@ -16,11 +16,11 @@ volatility-aware models behave—and how they might be extended further.
 I decided to go for the following process of modelling the log returns:
 
 $$
-\begin{align*}
+\begin{align\*}
 \log r_t &\sim \mathcal{N}(\mu_t, \sigma_t^2) \\
-\mu_t &= \alpha_0 + \sum_{i=1}^S \alpha_i \log r_{t-i} \\
-\sigma_t^2 &= \beta_0 + \sum_{i=1}^S \beta_i \sigma_{t-i}^2
-\end{align*}
+\mu_t &= \alpha_0 + \sum\_{i=1}^S \alpha_i \log r\_{t-i} \\
+\sigma_t^2 &= \beta_0 + \sum\_{i=1}^S \beta_i \sigma\_{t-i}^2
+\end{align\*}
 $$
 
 - 📊 Loads and engineers features from natural gas price time series
@@ -31,12 +31,25 @@ $$
 
 ### Simulated Price Paths
 
-![pricepath.png](index_files/figure-commonmark/cell-2-3-pricepath.png)
+<figure>
+<img src="index_files/figure-commonmark/cell-2-3-pricepath.png"
+alt="pricepath.png" />
+<figcaption aria-hidden="true">pricepath.png</figcaption>
+</figure>
 
 ### Call Option Payoffs at Expiry
 
-![callpayoffatexpiry.png](index_files/figure-commonmark/cell-2-1-callpayoffatexpiry.png)
+<figure>
+<img src="index_files/figure-commonmark/cell-2-1-callpayoffatexpiry.png"
+alt="callpayoffatexpiry.png" />
+<figcaption aria-hidden="true">callpayoffatexpiry.png</figcaption>
+</figure>
 
 ### Model-Implied Option Prices vs Strike
 
-![model-implied-price.png](index_files/figure-commonmark/cell-2-2-model-implied-price.png)
+<figure>
+<img
+src="index_files/figure-commonmark/cell-2-2-model-implied-price.png"
+alt="model-implied-price.png" />
+<figcaption aria-hidden="true">model-implied-price.png</figcaption>
+</figure>
