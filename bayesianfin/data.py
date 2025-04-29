@@ -59,6 +59,7 @@ class DFFeature(abc.ABC):
         pass
 
 
+@dataclass
 class Variance(DFFeature):
     rolling_variance_window: int = 3
 
@@ -71,6 +72,7 @@ class Variance(DFFeature):
         )
 
 
+@dataclass
 class Square(DFFeature):
     def extract(self, df: pl.DataFrame) -> pl.DataFrame:
         return df.with_columns(
@@ -78,11 +80,13 @@ class Square(DFFeature):
         )
 
 
+@dataclass
 class LogReturn(DFFeature):
     def extract(self, df: pl.DataFrame) -> pl.DataFrame:
         return df.with_columns(pl.col(self.source_field).log().alias(self.feature_name))
 
 
+@dataclass
 class FeatureEngineer:
     """A class for creating lagged features from time series data.
 

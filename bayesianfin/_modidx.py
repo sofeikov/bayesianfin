@@ -28,4 +28,9 @@ d = { 'settings': { 'branch': 'main',
                                   'bayesianfin.data.Variance': ('data.html#variance', 'bayesianfin/data.py'),
                                   'bayesianfin.data.Variance.extract': ('data.html#variance.extract', 'bayesianfin/data.py'),
                                   'bayesianfin.data.append_from_log_ret': ('data.html#append_from_log_ret', 'bayesianfin/data.py')},
-            'bayesianfin.models': {'bayesianfin.models.garch_model': ('garch_modelling.html#garch_model', 'bayesianfin/models.py')}}}
+            'bayesianfin.models': {'bayesianfin.models.garch_model': ('garch_modelling.html#garch_model', 'bayesianfin/models.py')},
+            'bayesianfin.simulation': { 'bayesianfin.simulation.Simulator': ('simulator.html#simulator', 'bayesianfin/simulation.py'),
+                                        'bayesianfin.simulation.Simulator.simulate_path': ( 'simulator.html#simulator.simulate_path',
+                                                                                            'bayesianfin/simulation.py'),
+                                        'bayesianfin.simulation.Simulator.simulate_paths': ( 'simulator.html#simulator.simulate_paths',
+                                                                                             'bayesianfin/simulation.py')}}}
