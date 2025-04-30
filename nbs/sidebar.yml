@@ -2,4 +2,6 @@ website:
   sidebar:
     contents:
       - index.ipynb
+      - 00_data.ipynb
       - 01_garch_like_modelling.ipynb
+      - simulator.ipynb
