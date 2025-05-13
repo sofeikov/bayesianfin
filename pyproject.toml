@@ -11,6 +11,7 @@ dependencies = [
     "nbdev>=2.3.34",
     "numpyro>=0.17.0",
     "polars>=1.22.0",
+    "pyarrow>=20.0.0",
     "requests",
     "scikit-learn>=1.6.1",
     "scipy==1.12.0",

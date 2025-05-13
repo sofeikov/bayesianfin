@@ -20,6 +20,7 @@ class Simulator:
     model: Callable
     feature_engineer: FeatureEngineer
     target_site: str = "log_ret"
+    inherit_vals: list[str] = ()
 
     def simulate_paths(
         self,
@@ -67,7 +68,7 @@ class Simulator:
             # Takes any samples from the site and record it
             new_log_ret = prior_predictions[self.target_site].squeeze().item()
             starting_sim_df = append_from_log_ret(
-                starting_sim_df, new_log_ret=new_log_ret
+                starting_sim_df, new_log_ret=new_log_ret, inherit_vals=self.inherit_vals
             )
 
             # With the new record attached, we re-extract the features.

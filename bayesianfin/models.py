@@ -3,7 +3,7 @@
 # %% auto 0
 __all__ = ['garch_like_model']
 
-# %% ../nbs/01_garch_like_modelling.ipynb 4
+# %% ../nbs/01_garch_like_modelling.ipynb 6
 import arviz as az
 import jax.numpy as jnp
 import matplotlib.pyplot as plt
@@ -17,25 +17,25 @@ from numpyro.infer import MCMC, NUTS, Predictive
 from tqdm import tqdm
 from bayesianfin.simulation import Simulator
 from bayesianfin.data import (
+    QuantileTransformer,
     DataLoader,
     FeatureEngineer,
     LogReturn,
     Variance,
-    Square,
-    append_from_log_ret,
+    Identity,
 )
 
-# %% ../nbs/01_garch_like_modelling.ipynb 5
+# %% ../nbs/01_garch_like_modelling.ipynb 7
 az.style.use("arviz-darkgrid")
 
-# %% ../nbs/01_garch_like_modelling.ipynb 15
+# %% ../nbs/01_garch_like_modelling.ipynb 17
 def garch_like_model(
     present_value: npt.NDArray, past_values: dict[str, npt.NDArray]
 ) -> None:
     b_var = numpyro.sample("b_var", dist.Normal(0.0, 0.3))  # So it is positive
 
     coeffs = {}
-    for col, s in feature_engineer.get_iterator("var"):
+    for col, s in feature_engineer.get_iterator("var_quantile"):
         param_name = feature_engineer.get_shift_pattern(col, s)
         coeffs[param_name] = numpyro.sample(f"param_{param_name}", dist.Exponential(50))
 
@@ -43,7 +43,9 @@ def garch_like_model(
     len_observations = len(present_value) if present_value is not None else 1
     with numpyro.plate("data", len_observations):
         mu_var = b_var
-        for col, s in feature_engineer.get_iterator("var"):
+        for col, s in feature_engineer.get_iterator("var_quantile"):
             param_name = feature_engineer.get_shift_pattern(col, s)
             mu_var += coeffs[param_name] * past_values[param_name]
-        numpyro.sample("log_ret", dist.Normal(0, jnp.sqrt(mu_var)), obs=present_value)
+
+    df = numpyro.sample("df", dist.Exponential(10.0))  # degrees of freedom, >2
+    numpyro.sample("log_ret", dist.StudentT(df, 0, jnp.sqrt(mu_var)), obs=present_value)
