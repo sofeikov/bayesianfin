@@ -4,4 +4,5 @@ website:
       - index.ipynb
       - 00_data.ipynb
       - 01_garch_like_modelling.ipynb
+      - 02_garch_like_sample_vol.ipynb
       - simulator.ipynb

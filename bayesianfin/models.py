@@ -30,7 +30,7 @@ az.style.use("arviz-darkgrid")
 
 # %% ../nbs/01_garch_like_modelling.ipynb 17
 def garch_like_model(
-    present_value: npt.NDArray, past_values: dict[str, npt.NDArray]
+    present_value: npt.NDArray = None, past_values: dict[str, npt.NDArray] = None
 ) -> None:
     b_var = numpyro.sample("b_var", dist.Normal(0.0, 0.3))  # So it is positive
 

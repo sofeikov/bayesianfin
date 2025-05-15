@@ -62,7 +62,6 @@ class Simulator:
             traj_key, step_key = random.split(traj_key)
             prior_predictions = prior_predictive(
                 step_key,
-                present_value=None,
                 past_values=current_price_shifts,
             )
             # Takes any samples from the site and record it
