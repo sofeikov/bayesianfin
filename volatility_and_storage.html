@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.31">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Using storage information to model Henry Hub Gas prices – bayesianfin</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e1a5c8363afafaef2c763b6775fbf3ca.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-fe8f458f31a467b51aeabd2275c1e88a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Using storage information to model Henry Hub Gas prices – bayesianfin">
+<meta property="og:description" content="Modelling finance from the ground-up">
+<meta property="og:image" content="https://sofeikov.github.io/bayesianfin/03_volatility_and_storage_files/figure-html/cell-5-output-1.png">
+<meta property="og:site_name" content="bayesianfin">
+<meta property="og:image:height" content="491">
+<meta property="og:image:width" content="731">
+<meta name="twitter:title" content="Using storage information to model Henry Hub Gas prices – bayesianfin">
+<meta name="twitter:description" content="Modelling finance from the ground-up">
+<meta name="twitter:image" content="https://sofeikov.github.io/bayesianfin/03_volatility_and_storage_files/figure-html/cell-5-output-1.png">
+<meta name="twitter:image-height" content="491">
+<meta name="twitter:image-width" content="731">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">bayesianfin</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./volatility_and_storage.html">Using storage information to model Henry Hub Gas prices</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Applications of bayesian modelling in finance</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00_data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">00_data.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./garch_like_modelling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">A Bayesian GARCH-Inspired Volatility Model for Energy Commodities Option Pricing</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./garch_like_sample_vol.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">GARCH-inspire latent volatility model</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./volatility_and_storage.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Using storage information to model Henry Hub Gas prices</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./simulator.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">simulator.html</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#eia-gas-report" id="toc-eia-gas-report" class="nav-link active" data-scroll-target="#eia-gas-report">EIA gas report</a></li>
+  <li><a href="#how-to-include-storage-levels" id="toc-how-to-include-storage-levels" class="nav-link" data-scroll-target="#how-to-include-storage-levels">How to include storage levels</a></li>
+  <li><a href="#data-loading" id="toc-data-loading" class="nav-link" data-scroll-target="#data-loading">Data loading</a></li>
+  <li><a href="#model-definition" id="toc-model-definition" class="nav-link" data-scroll-target="#model-definition">Model definition</a>
+  <ul class="collapse">
+  <li><a href="#garch_like_sample_vol_model" id="toc-garch_like_sample_vol_model" class="nav-link" data-scroll-target="#garch_like_sample_vol_model">garch_like_sample_vol_model</a></li>
+  </ul></li>
+  <li><a href="#fitting-and-diagnostics" id="toc-fitting-and-diagnostics" class="nav-link" data-scroll-target="#fitting-and-diagnostics">Fitting and diagnostics</a></li>
+  <li><a href="#autoregressive-quality-checks" id="toc-autoregressive-quality-checks" class="nav-link" data-scroll-target="#autoregressive-quality-checks">Autoregressive quality checks</a></li>
+  <li><a href="#inclusion-error-checks" id="toc-inclusion-error-checks" class="nav-link" data-scroll-target="#inclusion-error-checks">Inclusion error checks</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#additional-reading" id="toc-additional-reading" class="nav-link" data-scroll-target="#additional-reading">Additional reading</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/sofeikov/bayesianfin/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div><div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="volatility_and_storage.html.md"><i class="bi bi-file-code"></i>CommonMark</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Using storage information to model Henry Hub Gas prices</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Generative AI was used to fix grammar in the writing. The rest is done by me.</p>
+</div>
+</div>
+<p>In the previous post I built a latent volatility model that was used to predict Henry Hub gas prices. While it was a very simple model, it did output meaningful results in the end. One of the fundamental problems with that kind of model is that it makes no assumption on the nature of the underlying time series. It could just as easily be modeling sheep populations in New Zealand.. Today I’m making the first step in addressing that by including a fundamental macro indicator - reported levels of gas storage, collected by <a href="https://www.eia.gov/">US Energy Information Administration</a>. I’d recommend anyone to spend like 30 mins on their website - the amount of historical information on energy is amazing and it’s a great resource all around.</p>
+<p>The reason I decided to start with storage information is because it is a very strong indicator of the volatility. Depending on weather forecasts, the current levels of storage and other events, volatility goes up and down. For example, in warmer months, NG volatility tends to be lower(unless snow hits Texas), and in colder months when sudden frosts hit, the volatility will increase, as there is more demand for an already depleted commodity.</p>
+<section id="eia-gas-report" class="level2">
+<h2 class="anchored" data-anchor-id="eia-gas-report">EIA gas report</h2>
+<p>On a <a href="https://ir.eia.gov/ngs/ngs.html">weekly</a> basis, EIA <a href="https://ir.eia.gov/ngs/methodology.html">collects</a> information about gas storage levels. I will use storage level information from the lower 48 states. And while, there are other massive storages on other continents, US, on its own, being a massive energy market provides a valuable insight into future volatility values.</p>
+</section>
+<section id="how-to-include-storage-levels" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-include-storage-levels">How to include storage levels</h2>
+<p>Within the bayesian framework, there are a few ways to include the storage information. First of all, the EIA methodology document states that the parties reporting their storage levels are sampled, meaning that from week to week we do not get reports from the same parties. Plus, while it is unclear how much evidence there is, it would reasonable to assume that there inaccuracies in those reports. With that in mind, my initial idea was to model the storage levels as a variable with noisy observation, and consider it a latent variable that was periodically observed. That would lead to a two-level bayesian model. However, our NG prices dataset is on the daily basis and the storage reports are on the weekly basis, making it unclear how exactly those two should be aligned, in case the storage information is assumed a latent variable.</p>
+<p>I then decided to use it as an external regressor and leave the more complicated version for future trials. Additionally, I include storage level derivative into the modelling since I found that it helps to make the model more stable, plus conceptually it also makes sense that information about the speed of storage change and its direction are important.</p>
+<div id="a2c89683" class="cell" data-execution_count="374">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>The autoreload extension is already loaded. To reload it, use:
+  %reload_ext autoreload</code></pre>
+</div>
+</div>
+</section>
+<section id="data-loading" class="level2">
+<h2 class="anchored" data-anchor-id="data-loading">Data loading</h2>
+<p>Start with loading the daily level gas data</p>
+<div id="9afee38f" class="cell" data-execution_count="402">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>gas_data <span class="op">=</span> (</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    pl.read_csv(<span class="st">"data/ng_daily.csv"</span>, try_parse_dates<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    .drop_nulls()</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    .tail(<span class="dv">3500</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    .rename({<span class="st">"Date"</span>: <span class="st">"date"</span>, <span class="st">"Price"</span>: <span class="st">"price"</span>})</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>).with_columns(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    ret<span class="op">=</span>pl.col(<span class="st">"price"</span>) <span class="op">/</span> pl.col(<span class="st">"price"</span>).shift(<span class="dv">1</span>),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>gas_data</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="402">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3_500, 3)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">price</th>
+<th data-quarto-table-cell-role="th">ret</th>
+</tr>
+<tr class="even">
+<th>date</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2011-04-01</td>
+<td>4.32</td>
+<td>null</td>
+</tr>
+<tr class="even">
+<td>2011-04-04</td>
+<td>4.21</td>
+<td>0.974537</td>
+</tr>
+<tr class="odd">
+<td>2011-04-05</td>
+<td>4.22</td>
+<td>1.002375</td>
+</tr>
+<tr class="even">
+<td>2011-04-06</td>
+<td>4.17</td>
+<td>0.988152</td>
+</tr>
+<tr class="odd">
+<td>2011-04-07</td>
+<td>4.12</td>
+<td>0.98801</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>2025-02-04</td>
+<td>3.25</td>
+<td>0.984848</td>
+</tr>
+<tr class="even">
+<td>2025-02-05</td>
+<td>3.22</td>
+<td>0.990769</td>
+</tr>
+<tr class="odd">
+<td>2025-02-06</td>
+<td>3.31</td>
+<td>1.02795</td>
+</tr>
+<tr class="even">
+<td>2025-02-07</td>
+<td>3.32</td>
+<td>1.003021</td>
+</tr>
+<tr class="odd">
+<td>2025-02-10</td>
+<td>3.48</td>
+<td>1.048193</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>I then load storage data, focusing only on the lower 48 states. The relevant column is renamed to storage for convenience.</p>
+<div id="91835a20" class="cell" data-execution_count="378">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ng_storage_data <span class="op">=</span> (</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    pl.read_csv(<span class="st">"data/ng_storage.csv"</span>, truncate_ragged_lines<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    .with_columns(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>        pl.col(<span class="st">"Week ending"</span>).<span class="bu">str</span>.strptime(pl.Datetime, <span class="st">"</span><span class="sc">%d</span><span class="st">-%b-%y"</span>).alias(<span class="st">"date"</span>),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    .with_columns(pl.col(<span class="st">"date"</span>).cast(pl.Date))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    .rename({<span class="st">"Total Lower 48"</span>: <span class="st">"storage"</span>})</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>ng_storage_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="378">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 10)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Week ending</th>
+<th data-quarto-table-cell-role="th">Source</th>
+<th data-quarto-table-cell-role="th">East Region</th>
+<th data-quarto-table-cell-role="th">Midwest Region Mountain Region</th>
+<th data-quarto-table-cell-role="th">Pacific Region</th>
+<th data-quarto-table-cell-role="th">South Central Region</th>
+<th data-quarto-table-cell-role="th">Salt</th>
+<th data-quarto-table-cell-role="th">NonSalt</th>
+<th data-quarto-table-cell-role="th">storage</th>
+<th data-quarto-table-cell-role="th">date</th>
+</tr>
+<tr class="even">
+<th>str</th>
+<th>str</th>
+<th>i64</th>
+<th>i64</th>
+<th>i64</th>
+<th>i64</th>
+<th>i64</th>
+<th>i64</th>
+<th>i64</th>
+<th>date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>"01-Jan-10"</td>
+<td>"Derived EIA Weekly Estimates"</td>
+<td>769</td>
+<td>900</td>
+<td>195</td>
+<td>268</td>
+<td>985</td>
+<td>159</td>
+<td>826</td>
+<td>2010-01-01</td>
+</tr>
+<tr class="even">
+<td>"08-Jan-10"</td>
+<td>"Derived EIA Weekly Estimates"</td>
+<td>703</td>
+<td>820</td>
+<td>185</td>
+<td>257</td>
+<td>886</td>
+<td>123</td>
+<td>763</td>
+<td>2010-01-08</td>
+</tr>
+<tr class="odd">
+<td>"15-Jan-10"</td>
+<td>"Derived EIA Weekly Estimates"</td>
+<td>642</td>
+<td>750</td>
+<td>176</td>
+<td>246</td>
+<td>793</td>
+<td>91</td>
+<td>702</td>
+<td>2010-01-15</td>
+</tr>
+<tr class="even">
+<td>"22-Jan-10"</td>
+<td>"Derived EIA Weekly Estimates"</td>
+<td>616</td>
+<td>710</td>
+<td>171</td>
+<td>235</td>
+<td>789</td>
+<td>102</td>
+<td>687</td>
+<td>2010-01-22</td>
+</tr>
+<tr class="odd">
+<td>"29-Jan-10"</td>
+<td>"Derived EIA Weekly Estimates"</td>
+<td>582</td>
+<td>661</td>
+<td>164</td>
+<td>221</td>
+<td>779</td>
+<td>108</td>
+<td>671</td>
+<td>2010-01-29</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>Here is what storage dynamic look like:</p>
+<div id="4ac7cf2d" class="cell" data-execution_count="415">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sns.lineplot(ng_storage_data, x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"storage"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_volatility_and_storage_files/figure-html/cell-5-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Finally, joining both frames into one.</p>
+<div id="3e543760" class="cell" data-execution_count="380">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>gas_storage_data <span class="op">=</span> gas_data.join(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    ng_storage_data[<span class="st">"date"</span>, <span class="st">"storage"</span>], how<span class="op">=</span><span class="st">"left"</span>, on<span class="op">=</span><span class="st">"date"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>).with_columns(pl.col(<span class="st">"storage"</span>).forward_fill())</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>gas_storage_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="380">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (5, 4)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">price</th>
+<th data-quarto-table-cell-role="th">ret</th>
+<th data-quarto-table-cell-role="th">storage</th>
+</tr>
+<tr class="even">
+<th>date</th>
+<th>f64</th>
+<th>f64</th>
+<th>i64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2011-04-01</td>
+<td>4.32</td>
+<td>null</td>
+<td>578</td>
+</tr>
+<tr class="even">
+<td>2011-04-04</td>
+<td>4.21</td>
+<td>0.974537</td>
+<td>578</td>
+</tr>
+<tr class="odd">
+<td>2011-04-05</td>
+<td>4.22</td>
+<td>1.002375</td>
+<td>578</td>
+</tr>
+<tr class="even">
+<td>2011-04-06</td>
+<td>4.17</td>
+<td>0.988152</td>
+<td>578</td>
+</tr>
+<tr class="odd">
+<td>2011-04-07</td>
+<td>4.12</td>
+<td>0.98801</td>
+<td>578</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<p>I use my feature engineer class to extract the following features:</p>
+<ol type="1">
+<li>Log-return</li>
+<li>Log-variance</li>
+<li>Storage and variance quantiles</li>
+<li>Storage quantile derivative</li>
+</ol>
+<p>I use quantiles pretty much everywhere, because it is good way to standardise the data and still leave a lot of useful information in the transformed variable. If the value is 0.99, you know it’s a rare event, which is useful for debugging.</p>
+<div id="67659b88" class="cell" data-exec="false">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>feature_engineer <span class="op">=</span> FeatureEngineer(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    drop_nulls<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    transforms<span class="op">=</span>[</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>        LogReturn(source_field<span class="op">=</span><span class="st">"ret"</span>, feature_name<span class="op">=</span><span class="st">"log_ret"</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>        Variance(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>            source_field<span class="op">=</span><span class="st">"price"</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>            feature_name<span class="op">=</span><span class="st">"var"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>            rolling_variance_window<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        LogReturn(source_field<span class="op">=</span><span class="st">"var"</span>, feature_name<span class="op">=</span><span class="st">"log_var"</span>, requested_lag<span class="op">=</span><span class="dv">0</span>),</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        QuantileTransformer(</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>            source_field<span class="op">=</span><span class="st">"var"</span>, feature_name<span class="op">=</span><span class="st">"var_quantile"</span>, requested_lag<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>        QuantileTransformer(</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            source_field<span class="op">=</span><span class="st">"storage"</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            feature_name<span class="op">=</span><span class="st">"storage_quantile"</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>            step_size<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>            requested_lag<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>        Derivative(</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>            source_field<span class="op">=</span><span class="st">"storage_quantile"</span>,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>            feature_name<span class="op">=</span><span class="st">"storage_quantile_derivative"</span>,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>            step_size<span class="op">=</span><span class="dv">8</span>,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>            requested_lag<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>        ),</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    ],</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    n_shifts<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>df_with_features <span class="op">=</span> feature_engineer.create_features(gas_storage_data)</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>df_with_features <span class="op">=</span> df_with_features.drop_nulls()</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>df_with_features</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="381">
+<div><style>
+.dataframe > thead > tr,
+.dataframe > tbody > tr {
+  text-align: right;
+  white-space: pre-wrap;
+}
+</style>
+<small>shape: (3_484, 20)</small>
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">date</th>
+<th data-quarto-table-cell-role="th">price</th>
+<th data-quarto-table-cell-role="th">ret</th>
+<th data-quarto-table-cell-role="th">storage</th>
+<th data-quarto-table-cell-role="th">log_ret</th>
+<th data-quarto-table-cell-role="th">var</th>
+<th data-quarto-table-cell-role="th">log_var</th>
+<th data-quarto-table-cell-role="th">var_quantile</th>
+<th data-quarto-table-cell-role="th">storage_quantile</th>
+<th data-quarto-table-cell-role="th">storage_quantile_derivative</th>
+<th data-quarto-table-cell-role="th">month</th>
+<th data-quarto-table-cell-role="th">prev_log_ret_1</th>
+<th data-quarto-table-cell-role="th">prev_log_ret_2</th>
+<th data-quarto-table-cell-role="th">prev_log_ret_3</th>
+<th data-quarto-table-cell-role="th">prev_var_1</th>
+<th data-quarto-table-cell-role="th">prev_var_2</th>
+<th data-quarto-table-cell-role="th">prev_var_3</th>
+<th data-quarto-table-cell-role="th">prev_var_quantile_1</th>
+<th data-quarto-table-cell-role="th">prev_storage_quantile_1</th>
+<th data-quarto-table-cell-role="th">prev_storage_quantile_derivative_1</th>
+</tr>
+<tr class="even">
+<th>date</th>
+<th>f64</th>
+<th>f64</th>
+<th>i64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>i8</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+<th>f64</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2011-04-26</td>
+<td>4.32</td>
+<td>0.988558</td>
+<td>610</td>
+<td>-0.011508</td>
+<td>0.00125</td>
+<td>-6.684612</td>
+<td>0.470952</td>
+<td>0.22973</td>
+<td>0.027528</td>
+<td>3</td>
+<td>0.009195</td>
+<td>0.0</td>
+<td>0.032867</td>
+<td>0.0008</td>
+<td>0.0001</td>
+<td>0.0098</td>
+<td>0.411746</td>
+<td>0.202202</td>
+<td>0.019019</td>
+</tr>
+<tr class="even">
+<td>2011-04-27</td>
+<td>4.35</td>
+<td>1.006944</td>
+<td>610</td>
+<td>0.00692</td>
+<td>0.00045</td>
+<td>-7.706263</td>
+<td>0.340426</td>
+<td>0.22973</td>
+<td>0.027528</td>
+<td>3</td>
+<td>-0.011508</td>
+<td>0.009195</td>
+<td>0.0</td>
+<td>0.00125</td>
+<td>0.0008</td>
+<td>0.0001</td>
+<td>0.470952</td>
+<td>0.202202</td>
+<td>0.019019</td>
+</tr>
+<tr class="odd">
+<td>2011-04-28</td>
+<td>4.38</td>
+<td>1.006897</td>
+<td>610</td>
+<td>0.006873</td>
+<td>0.00045</td>
+<td>-7.706263</td>
+<td>0.340574</td>
+<td>0.22973</td>
+<td>0.0</td>
+<td>3</td>
+<td>0.00692</td>
+<td>-0.011508</td>
+<td>0.009195</td>
+<td>0.00045</td>
+<td>0.00125</td>
+<td>0.0008</td>
+<td>0.340426</td>
+<td>0.22973</td>
+<td>0.046547</td>
+</tr>
+<tr class="even">
+<td>2011-04-29</td>
+<td>4.51</td>
+<td>1.02968</td>
+<td>640</td>
+<td>0.029248</td>
+<td>0.00845</td>
+<td>-4.773589</td>
+<td>0.770854</td>
+<td>0.264765</td>
+<td>0.035035</td>
+<td>3</td>
+<td>0.006873</td>
+<td>0.00692</td>
+<td>-0.011508</td>
+<td>0.00045</td>
+<td>0.00045</td>
+<td>0.00125</td>
+<td>0.340574</td>
+<td>0.22973</td>
+<td>0.046547</td>
+</tr>
+<tr class="odd">
+<td>2011-05-02</td>
+<td>4.6</td>
+<td>1.019956</td>
+<td>640</td>
+<td>0.019759</td>
+<td>0.00405</td>
+<td>-5.509038</td>
+<td>0.658659</td>
+<td>0.264765</td>
+<td>0.035035</td>
+<td>4</td>
+<td>0.029248</td>
+<td>0.006873</td>
+<td>0.00692</td>
+<td>0.00845</td>
+<td>0.00045</td>
+<td>0.00045</td>
+<td>0.770854</td>
+<td>0.22973</td>
+<td>0.046547</td>
+</tr>
+<tr class="even">
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+<td>…</td>
+</tr>
+<tr class="odd">
+<td>2025-02-04</td>
+<td>3.25</td>
+<td>0.984848</td>
+<td>638</td>
+<td>-0.015267</td>
+<td>0.00125</td>
+<td>-6.684612</td>
+<td>0.47869</td>
+<td>0.261762</td>
+<td>-0.200701</td>
+<td>1</td>
+<td>0.11892</td>
+<td>-0.062831</td>
+<td>-0.080043</td>
+<td>0.06845</td>
+<td>0.01805</td>
+<td>0.0338</td>
+<td>0.951502</td>
+<td>0.462462</td>
+<td>-0.115616</td>
+</tr>
+<tr class="even">
+<td>2025-02-05</td>
+<td>3.22</td>
+<td>0.990769</td>
+<td>638</td>
+<td>-0.009274</td>
+<td>0.00045</td>
+<td>-7.706263</td>
+<td>0.347916</td>
+<td>0.261762</td>
+<td>-0.074074</td>
+<td>1</td>
+<td>-0.015267</td>
+<td>0.11892</td>
+<td>-0.062831</td>
+<td>0.00125</td>
+<td>0.06845</td>
+<td>0.01805</td>
+<td>0.47869</td>
+<td>0.335836</td>
+<td>-0.242242</td>
+</tr>
+<tr class="odd">
+<td>2025-02-06</td>
+<td>3.31</td>
+<td>1.02795</td>
+<td>638</td>
+<td>0.027567</td>
+<td>0.00405</td>
+<td>-5.509038</td>
+<td>0.662417</td>
+<td>0.261762</td>
+<td>-0.074074</td>
+<td>1</td>
+<td>-0.009274</td>
+<td>-0.015267</td>
+<td>0.11892</td>
+<td>0.00045</td>
+<td>0.00125</td>
+<td>0.06845</td>
+<td>0.347916</td>
+<td>0.335836</td>
+<td>-0.242242</td>
+</tr>
+<tr class="even">
+<td>2025-02-07</td>
+<td>3.32</td>
+<td>1.003021</td>
+<td>624</td>
+<td>0.003017</td>
+<td>0.0001</td>
+<td>-9.21034</td>
+<td>0.0</td>
+<td>0.241742</td>
+<td>-0.094094</td>
+<td>1</td>
+<td>0.027567</td>
+<td>-0.009274</td>
+<td>-0.015267</td>
+<td>0.00405</td>
+<td>0.00045</td>
+<td>0.00125</td>
+<td>0.662417</td>
+<td>0.335836</td>
+<td>-0.242242</td>
+</tr>
+<tr class="odd">
+<td>2025-02-10</td>
+<td>3.48</td>
+<td>1.048193</td>
+<td>624</td>
+<td>0.047068</td>
+<td>0.0128</td>
+<td>-4.35831</td>
+<td>0.831581</td>
+<td>0.241742</td>
+<td>-0.094094</td>
+<td>1</td>
+<td>0.003017</td>
+<td>0.027567</td>
+<td>-0.009274</td>
+<td>0.0001</td>
+<td>0.00405</td>
+<td>0.00045</td>
+<td>0.0</td>
+<td>0.335836</td>
+<td>-0.242242</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="9e2fcebe" class="cell" data-execution_count="382">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cut-off point</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> <span class="dv">300</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    present_value_log_ret,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    present_value_log_var,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    storage,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    month,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    present_value_test,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>) <span class="op">=</span> (</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    df_with_features[<span class="st">"log_ret"</span>][:<span class="op">-</span>T].to_numpy(),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    df_with_features[<span class="st">"log_var"</span>][:<span class="op">-</span>T].to_numpy(),</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    df_with_features[<span class="st">"storage_quantile"</span>][:<span class="op">-</span>T].to_numpy(),</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    df_with_features[<span class="st">"month"</span>][:<span class="op">-</span>T].to_numpy(),</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>    df_with_features[<span class="st">"log_ret"</span>][<span class="op">-</span>T:].to_numpy(),</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>past_values_train, past_values_test <span class="op">=</span> (</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    feature_engineer.to_numpy_dict(df_with_features[:<span class="op">-</span>T]),</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    feature_engineer.to_numpy_dict(df_with_features[<span class="op">-</span>T:]),</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-definition" class="level2">
+<h2 class="anchored" data-anchor-id="model-definition">Model definition</h2>
+<p>The model is defined in the same way it was described above.</p>
+<hr>
+<section id="garch_like_sample_vol_model" class="level3">
+<h3 class="anchored" data-anchor-id="garch_like_sample_vol_model">garch_like_sample_vol_model</h3>
+<blockquote class="blockquote">
+<pre><code> garch_like_sample_vol_model (value_log_ret:numpy.ndarray[typing.Any,numpy
+                              .dtype[+_ScalarType_co]]=None, log_var_value
+                              :numpy.ndarray[typing.Any,numpy.dtype[+_Scal
+                              arType_co]]=None, storage:numpy.ndarray[typi
+                              ng.Any,numpy.dtype[+_ScalarType_co]]=None, m
+                              onth:numpy.ndarray[typing.Any,numpy.dtype[+_
+                              ScalarType_co]]=None, past_values:dict[str,n
+                              umpy.ndarray[typing.Any,numpy.dtype[+_Scalar
+                              Type_co]]]=None)</code></pre>
+</blockquote>
+<div id="68ed6f24" class="cell" data-execution_count="405">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>numpyro.render_model(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    garch_like_sample_vol_model,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    model_args<span class="op">=</span>(</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>        present_value_log_ret,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>        present_value_log_var,</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>        storage,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>        month,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>        past_values_train,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="405">
+<div>
+<figure class="figure">
+<p><img src="03_volatility_and_storage_files/figure-html/cell-10-output-1.svg" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The first order of business is to do PPC - prior predictive checks. In out case, I deal with data in the temporal domain, hence our checks will be autoregressive too. What I mainly want to check here is that with the current prior I do not get explosive time series, and they stay within a reasonable level. On the image below, you can see, that this is indeed the case.</p>
+<p>Though PPCs are very useful in general, practically speaking, if you have a lot of observations, bad prior will be overcome by those data. This is the case for this model too: I tried to set unreasonable priors and the model would converge to the same values again and again. That’s because there are thousands of samples. Nonetheless, it is a good practice and I do it.</p>
+<div id="c6f8c240" class="cell" data-execution_count="404">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>simulator <span class="op">=</span> Simulator(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>garch_like_sample_vol_model,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    feature_engineer<span class="op">=</span>feature_engineer,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    exo_fixed_effects<span class="op">=</span>[<span class="st">"month"</span>],</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    inherit_vals<span class="op">=</span>[<span class="st">"storage"</span>],</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>starting_sim_df <span class="op">=</span> gas_storage_data[<span class="op">-</span>T <span class="op">-</span> feature_engineer.n_shifts <span class="op">*</span> <span class="dv">5</span> <span class="op">-</span> <span class="dv">100</span> : <span class="op">-</span>T]</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>all_runs <span class="op">=</span> simulator.simulate_paths(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    steps<span class="op">=</span><span class="dv">7</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    starting_sim_df<span class="op">=</span>starting_sim_df,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    posterior_samples<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    num_sims<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>sns.lineplot(all_runs, x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"price"</span>, hue<span class="op">=</span><span class="st">"run_id"</span>)</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">90</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_volatility_and_storage_files/figure-html/cell-11-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="fitting-and-diagnostics" class="level2">
+<h2 class="anchored" data-anchor-id="fitting-and-diagnostics">Fitting and diagnostics</h2>
+<p>The model is fitted using MCMC. You can see that estimates are relatively tight. Note, how the derivative is entering with the negative sign into the linear equation. If the storage level is dropping(negative change), the term will make a positive contribution into the volatility.</p>
+<p>I also show the MCMC diagnostics below. There is a decent number of samples with low autocorrelations and the chains look to be mixing well.</p>
+<div id="0c52f6fe" class="cell" data-execution_count="385">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rng_key <span class="op">=</span> random.PRNGKey(<span class="dv">0</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Run NUTS.</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>kernel <span class="op">=</span> NUTS(garch_like_sample_vol_model)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>num_samples <span class="op">=</span> <span class="dv">2000</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>mcmc <span class="op">=</span> MCMC(kernel, num_warmup<span class="op">=</span><span class="dv">1000</span>, num_samples<span class="op">=</span>num_samples)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>mcmc.run(</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>    rng_key_,</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    present_value_log_ret,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>    present_value_log_var,</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>    storage,</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>    month,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    past_values_train,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>mcmc.print_summary()</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>posterior_samples <span class="op">=</span> mcmc.get_samples()</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(posterior_samples.keys())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>sample: 100%|██████████| 3000/3000 [00:01&lt;00:00, 1742.73it/s, 7 steps of size 2.36e-01. acc. prob=0.93] </code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                                                mean       std    median      5.0%     95.0%     n_eff     r_hat
+                                     b_var     -7.11      0.00     -7.11     -7.12     -7.10   1296.73      1.00
+             param_prev_storage_quantile_1      0.19      0.01      0.19      0.18      0.20   1335.46      1.00
+  param_prev_storage_quantile_derivative_1     -3.25      0.02     -3.25     -3.29     -3.21   1161.86      1.00
+                 param_prev_var_quantile_1      1.23      0.01      1.23      1.22      1.24   1393.80      1.00
+
+Number of divergences: 0
+dict_keys(['b_var', 'param_prev_storage_quantile_1', 'param_prev_storage_quantile_derivative_1', 'param_prev_var_quantile_1'])</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+</div>
+<div id="2da9c28f" class="cell" data-execution_count="406">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>posterior_samples <span class="op">=</span> mcmc.get_samples()</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>predictive <span class="op">=</span> Predictive(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    garch_like_sample_vol_model,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    posterior_samples<span class="op">=</span>posterior_samples,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    return_sites<span class="op">=</span>[<span class="st">"log_ret"</span>],  <span class="co"># or whatever your observation site is called</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>rng_key, rng_key_ppc <span class="op">=</span> random.split(rng_key)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>ppc_samples <span class="op">=</span> predictive(</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    rng_key_ppc,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    present_value_log_ret,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    present_value_log_var,</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    storage,</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    month,</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    past_values_train,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>prior_samples <span class="op">=</span> Predictive(garch_like_sample_vol_model, num_samples<span class="op">=</span><span class="dv">2000</span>)(</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    rng_key,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    present_value_log_ret,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    present_value_log_var,</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    storage,</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    month,</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>    past_values_train,</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>idata <span class="op">=</span> az.from_numpyro(mcmc, posterior_predictive<span class="op">=</span>ppc_samples, prior<span class="op">=</span>prior_samples)</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>az.plot_trace(idata, var_names<span class="op">=</span>[<span class="st">"~^log_ret_var"</span>], filter_vars<span class="op">=</span><span class="st">"regex"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/Users/sofeikov/work/bayesianfin/.venv/lib/python3.12/site-packages/arviz/utils.py:146: UserWarning: Items starting with ~: ['^log_ret_var'] have not been found and will be ignored
+  warnings.warn(</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_volatility_and_storage_files/figure-html/cell-13-output-2.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="autoregressive-quality-checks" class="level2">
+<h2 class="anchored" data-anchor-id="autoregressive-quality-checks">Autoregressive quality checks</h2>
+<p>In this section I show how to check the quality of the model in this autoregressive setup. First I model a few dozens paths to see if on average the predictions stays within reasonable bounds. It is followed by inclusion error checks - model a few points in the future, and see where does an actual price lies within your prediction range.</p>
+<div id="7ee17830" class="cell" data-execution_count="413">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>simulator <span class="op">=</span> Simulator(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span>garch_like_sample_vol_model,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    feature_engineer<span class="op">=</span>feature_engineer,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    exo_fixed_effects<span class="op">=</span>[<span class="st">"month"</span>],</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    inherit_vals<span class="op">=</span>[<span class="st">"storage"</span>],</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>posterior_for_gen <span class="op">=</span> {k: ps[<span class="dv">0</span>:<span class="dv">1</span>] <span class="cf">for</span> k, ps <span class="kw">in</span> posterior_samples.items()}</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>starting_sim_df <span class="op">=</span> gas_storage_data[<span class="op">-</span>T <span class="op">-</span> feature_engineer.n_shifts <span class="op">*</span> <span class="dv">5</span> <span class="op">-</span> <span class="dv">50</span> : <span class="op">-</span>T]</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>all_runs <span class="op">=</span> simulator.simulate_paths(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    steps<span class="op">=</span><span class="dv">30</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>    starting_sim_df<span class="op">=</span>starting_sim_df,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>    posterior_samples<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>    num_sims<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As you can see on the image below, the paths look quite reasonable, with few deviating too much. This was, of course, a qualitative statement, rather than a quantitative one. But the latter is coming too.</p>
+<div id="3b1cb162" class="cell" data-execution_count="414">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>sns.lineplot(all_runs, x<span class="op">=</span><span class="st">"date"</span>, y<span class="op">=</span><span class="st">"price"</span>, hue<span class="op">=</span><span class="st">"run_id"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>plt.xticks(rotation<span class="op">=</span><span class="dv">90</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_volatility_and_storage_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div id="f03ad772" class="cell" data-execution_count="411">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>last_prices <span class="op">=</span> (</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    all_runs.sort(<span class="st">"date"</span>)  <span class="co"># Ensure dates are in correct order</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    .group_by(<span class="st">"run_id"</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>    .agg(pl.col(<span class="st">"price"</span>).last())  <span class="co"># Get the last price for each run</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    .rename({<span class="st">"price"</span>: <span class="st">"final_price"</span>})</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>sns.histplot(last_prices, x<span class="op">=</span><span class="st">"final_price"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_volatility_and_storage_files/figure-html/cell-16-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="inclusion-error-checks" class="level2">
+<h2 class="anchored" data-anchor-id="inclusion-error-checks">Inclusion error checks</h2>
+<p>Here I do some inclusion checks to see how well the actual prices fit into the price spread predicted by the model.</p>
+<div id="2fe79f30" class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>target_window <span class="op">=</span> <span class="dv">7</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>posterior_for_gen <span class="op">=</span> {k: ps[<span class="dv">0</span>:<span class="dv">1</span>] <span class="cf">for</span> k, ps <span class="kw">in</span> posterior_samples.items()}</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>shifts <span class="op">=</span> <span class="bu">list</span>(<span class="bu">range</span>(<span class="dv">0</span>, T, <span class="dv">10</span>))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>all_lasts <span class="op">=</span> []</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>actual_prices <span class="op">=</span> []</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ct, t <span class="kw">in</span> tqdm(<span class="bu">enumerate</span>(shifts), total<span class="op">=</span><span class="bu">len</span>(shifts)):</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    starting_sim_df <span class="op">=</span> gas_storage_data[</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        <span class="op">-</span>T <span class="op">-</span> feature_engineer.n_shifts <span class="op">*</span> <span class="dv">5</span> <span class="op">-</span> <span class="dv">50</span> <span class="op">+</span> t : <span class="op">-</span>T <span class="op">+</span> t</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    ]</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>    this_sim <span class="op">=</span> simulator.simulate_paths(</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        steps<span class="op">=</span>target_window,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        starting_sim_df<span class="op">=</span>starting_sim_df,</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        posterior_samples<span class="op">=</span>posterior_for_gen,</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        num_sims<span class="op">=</span><span class="dv">50</span>,</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>    last_prices <span class="op">=</span> (</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        this_sim.sort(<span class="st">"date"</span>)  <span class="co"># Ensure dates are in correct order</span></span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>        .group_by(<span class="st">"run_id"</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        .agg(pl.col(<span class="st">"price"</span>).last())  <span class="co"># Get the last price for each run</span></span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>        .rename({<span class="st">"price"</span>: <span class="st">"final_price"</span>})</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>        .with_columns(pl.lit(ct).alias(<span class="st">"run_id"</span>))</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>    actual_prices.append(</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a>        {<span class="st">"run_id"</span>: ct, <span class="st">"actual_price"</span>: gas_storage_data[<span class="op">-</span>T <span class="op">+</span> t][<span class="st">"price"</span>][<span class="dv">0</span>]}</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>    all_lasts.append(last_prices)</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>all_lasts <span class="op">=</span> pl.concat(all_lasts)</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>actual_prices <span class="op">=</span> pl.DataFrame(actual_prices)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>100%|██████████| 30/30 [00:31&lt;00:00,  1.04s/it]</code></pre>
+</div>
+</div>
+<p>From the image below it can be seen that all observed prices, except for one(which was a huge jump in real data) lie within the predicted interval. However it is always interesting to compare it with another version of the model. Let’s do that for the model that does not include storage as a regressor. Here is the result:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="03_volatility_and_storage_files/figure-html/1466c316-1-image.png" class="img-fluid figure-img"></p>
+<figcaption>image.png</figcaption>
+</figure>
+</div>
+<p>If you compare this image with the image below, you can clearly see that there are less outliers in the box plot, which means that the storage information that I added lead to improved precision and prediction stability. Which means that the storage information does indeed contain a useful signal. Practically speaking, if you model does not overprice the commodity value too much, it means that you can offer more competitive prices on the derivatives you might be selling.</p>
+<div id="f5706f6c" class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>all_lasts, x<span class="op">=</span><span class="st">"run_id"</span>, y<span class="op">=</span><span class="st">"final_price"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>sns.scatterplot(data<span class="op">=</span>actual_prices, x<span class="op">=</span><span class="st">"run_id"</span>, y<span class="op">=</span><span class="st">"actual_price"</span>, zorder<span class="op">=</span><span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_volatility_and_storage_files/figure-html/cell-18-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The observed tighter spread above is confirmed by a lower error(0.065 vs 0.087).</p>
+<div id="15f3123e" class="cell" data-execution_count="412">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>all_lasts.join(</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    actual_prices, left_on<span class="op">=</span><span class="st">"run_id"</span>, right_on<span class="op">=</span><span class="st">"run_id"</span>, how<span class="op">=</span><span class="st">"inner"</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>).with_columns(error<span class="op">=</span>(pl.col(<span class="st">"final_price"</span>) <span class="op">-</span> pl.col(<span class="st">"actual_price"</span>)) <span class="op">**</span> <span class="dv">2</span>).group_by(</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"run_id"</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>).agg(pl.col(<span class="st">"error"</span>).mean())[<span class="st">"error"</span>].median()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="412">
+<pre><code>0.06586484831089998</code></pre>
+</div>
+</div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>By including storage information as regressors I was able to get a better model that has a better predictive power and more realistic volatility dynamics. By finally using macro regressors like storage levels, I finally get to work on a model that is somewhat unique to gas and it can reflect that market’s specific dynamics.</p>
+<p>Despite improving precision, this model suffers still suffers from the following:</p>
+<ol type="1">
+<li>The vol window is too short in the feature engineering</li>
+<li>The volatility-of-volatility is currently fixed at a very low number. So far I could not find a satisfactory way to model it, it just leads to volatility explosion</li>
+<li>The seasonal effects are not included. Given that on winter months storages are depleted, while being injected in the summer, this should explain a good deal of volatility. However, this introduces 12 additional parameters and it is unclear how use them. As a bias entry into volatility? As a vol-of-vol? As something affecting the storage levels?</li>
+</ol>
+<p>So far adding seasonality effects has led to worse sampling efficiency in the MCMC, and while prediction still look good, they do not improve, which feels wrong. Stay tuned — tackling seasonality is my next move.</p>
+</section>
+<section id="additional-reading" class="level2">
+<h2 class="anchored" data-anchor-id="additional-reading">Additional reading</h2>
+<ul>
+<li><a href="https://www.cmegroup.com/education/courses/introduction-to-energy/introduction-to-natural-gas/understanding-henry-hub.html">Understanding Henry Hub</a></li>
+<li><a href="https://www.cmegroup.com/education/courses/introduction-to-energy/introduction-to-natural-gas/understanding-natural-gas-risk-management-spreads-storage.html">Natural gas seasonality and storage</a></li>
+<li><a href="https://ir.eia.gov/ngs/ngs.html">Weekly gas storage report</a></li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/sofeikov\.github\.io\/bayesianfin");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/sofeikov/bayesianfin/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
