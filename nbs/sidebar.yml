@@ -5,4 +5,5 @@ website:
       - 00_data.ipynb
       - 01_garch_like_modelling.ipynb
       - 02_garch_like_sample_vol.ipynb
+      - 03_volatility_and_storage.ipynb
       - simulator.ipynb

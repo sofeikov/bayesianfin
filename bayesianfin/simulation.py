@@ -21,6 +21,8 @@ class Simulator:
     feature_engineer: FeatureEngineer
     target_site: str = "log_ret"
     inherit_vals: list[str] = ()
+    exo_fixed_effects: list[str] = ()
+    additional_effects: list[str] = ()
 
     def simulate_paths(
         self,
@@ -58,16 +60,25 @@ class Simulator:
         feature_sim_df = feature_engineer.create_features(starting_sim_df)
         current_price_shifts = feature_engineer.to_numpy_dict(feature_sim_df[-1])
 
+        add_kwargs = {}
+        for eff in self.exo_fixed_effects:
+            add_kwargs[eff] = feature_sim_df[-1][eff].to_numpy()
+
         for t in range(steps):
             traj_key, step_key = random.split(traj_key)
             prior_predictions = prior_predictive(
-                step_key,
-                past_values=current_price_shifts,
+                step_key, past_values=current_price_shifts, **add_kwargs
             )
             # Takes any samples from the site and record it
             new_log_ret = prior_predictions[self.target_site].squeeze().item()
             starting_sim_df = append_from_log_ret(
-                starting_sim_df, new_log_ret=new_log_ret, inherit_vals=self.inherit_vals
+                starting_sim_df,
+                new_log_ret=new_log_ret,
+                inherit_vals=self.inherit_vals,
+                add_variables={
+                    e: int(prior_predictions[e].squeeze().item())
+                    for e in self.additional_effects
+                },
             )
 
             # With the new record attached, we re-extract the features.

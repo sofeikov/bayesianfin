@@ -47,5 +47,4 @@ def garch_like_model(
             param_name = feature_engineer.get_shift_pattern(col, s)
             mu_var += coeffs[param_name] * past_values[param_name]
 
-    df = numpyro.sample("df", dist.Exponential(10.0))  # degrees of freedom, >2
-    numpyro.sample("log_ret", dist.StudentT(df, 0, jnp.sqrt(mu_var)), obs=present_value)
+    numpyro.sample("log_ret", dist.Normal(0, jnp.sqrt(mu_var)), obs=present_value)
